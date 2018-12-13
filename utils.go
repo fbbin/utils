@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/binary"
@@ -15,6 +16,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 )
 
 func Ip2Long(ip string) (uint32, error) {
@@ -314,4 +318,22 @@ func Shuffle(vals []interface{}) []interface{} {
 		ret[i] = vals[randIndex]
 	}
 	return ret
+}
+
+// 将内容转码成GBK
+func Encode(src string) string {
+	data, err := ioutil.ReadAll(transform.NewReader(bytes.NewReader([]byte(src)), simplifiedchinese.GBK.NewEncoder()))
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+// 将内容转码成UTF-8
+func Decode(src string) string {
+	data, err := ioutil.ReadAll(transform.NewReader(bytes.NewReader([]byte(src)), simplifiedchinese.GBK.NewDecoder()))
+	if err != nil {
+		return ""
+	}
+	return string(data)
 }
