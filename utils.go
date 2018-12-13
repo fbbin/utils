@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math"
+	"math/rand"
 	"net/url"
 	"os"
 	"strconv"
@@ -32,6 +33,7 @@ func Ip2Long(ip string) (uint32, error) {
 	return intIp, nil
 }
 
+// IP转成字符串 大端解析
 func Long2Ip(intIp uint32) (string, error) {
 	ip4 := intIp >> 0 & 255
 	ip3 := intIp >> 8 & 255
@@ -42,6 +44,33 @@ func Long2Ip(intIp uint32) (string, error) {
 	}
 	ipString := fmt.Sprintf("%d.%d.%d.%d", ip1, ip2, ip3, ip4)
 	return ipString, nil
+}
+
+func Long2IpBig(intIp int) (string, bool) {
+	i1 := intIp & 255
+	i2 := intIp >> 8 & 255
+	i3 := intIp >> 16 & 255
+	i4 := intIp >> 24 & 255
+	if i1 > 255 || i2 > 255 || i3 > 255 || i4 > 255 {
+		return "", false
+	}
+	ipstring := fmt.Sprintf("%d.%d.%d.%d", i1, i2, i3, i4)
+
+	return ipstring, true
+}
+
+// IP转成字符串 (小端解析)
+func Long2IpLittle(intIp int) (string, bool) {
+	i1 := intIp & 255
+	i2 := intIp >> 8 & 255
+	i3 := intIp >> 16 & 255
+	i4 := intIp >> 24 & 255
+	if i1 > 255 || i2 > 255 || i3 > 255 || i4 > 255 {
+		return "", false
+	}
+	ipString := fmt.Sprintf("%d.%d.%d.%d", i4, i3, i2, i1)
+
+	return ipString, true
 }
 
 func Int64ToByte(i int64) []byte {
